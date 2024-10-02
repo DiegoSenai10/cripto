@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criptografar e Descriptografar Mensagens</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js"></script> <!-- Referência ao arquivo server.js -->
+    <script>
+        // Armazenar a chave de API
+        const apiKey = 'isaqueDiego'; // Substitua pela sua chave de API
+
+        // Função para criptografar a mensagem usando a API
+        async function encryptMessage() {
+            const message = document.getElementById('messageInput').value;
+
+            if (!message) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://17a8acad-868f-471c-9a5e-968c236c5d17-00-j1kcz9btic55.riker.replit.dev/api/encrypt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey // Usando a variável da chave de API
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('encryptedMessage').innerText = `Mensagem criptografada: ${data.encryptedMessage}`;
+                } else {
+                    alert(data.message || 'Erro ao criptografar a mensagem.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao se conectar com o servidor.');
+            }
+        }
+
+        // Função para descriptografar a mensagem localmente
+        async function decryptMessage() {
+            const encryptedMessage = document.getElementById('encryptedMessageInput').value;
+
+            if (!encryptedMessage) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://17a8acad-868f-471c-9a5e-968c236c5d17-00-j1kcz9btic55.riker.replit.dev/api/decrypt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey // Usando a variável da chave de API
+                    },
+                    body: JSON.stringify({ encryptedMessage })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('decryptedMessage').innerText = `Mensagem descriptografada: ${data.decryptedMessage}`;
+                } else {
+                    alert(data.message || 'Erro ao descriptografar a mensagem.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao se conectar com o servidor.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Criptografar Mensagens</h1>
+
+    <label for="messageInput">Mensagem:</label>
+    <textarea id="messageInput" rows="4"></textarea>
+
+    <!-- Removido o campo de entrada da chave de API -->
+    
+    <button onclick="encryptMessage()">Criptografar Mensagem</button>
+
+    <h3 id="encryptedMessage">Mensagem criptografada: </h3>
+
+    <hr>
+
+    <h1>Descriptografar Mensagens</h1>
+
+    <label for="encryptedMessageInput">Mensagem Criptografada:</label>
+    <textarea id="encryptedMessageInput" rows="4"></textarea>
+
+    <!-- Removido o campo de entrada da chave de API -->
+    
+    <button onclick="decryptMessage()">Descriptografar Mensagem</button>
+
+    <h3 id="decryptedMessage">Mensagem descriptografada: </h3>
+</body>
+</html>
